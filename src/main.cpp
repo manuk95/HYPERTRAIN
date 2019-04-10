@@ -18,10 +18,7 @@ void setup() {
 
   attachInterrupt(digitalPinToInterrupt(TACHO_PIN), isr_tacho_count, RISING);
   rot_count = 0;
-  
-  
-  
-  
+
   sendJSONAccError();    // Test
   
   set_speed = 0;
@@ -54,17 +51,17 @@ void loop() {
     if((set_speed - cur_speed) < 20){
       digitalWrite(USV_DIS_PIN, LOW); 
       state = DRIVE;
-    } else {
-      PIDupdate();
     }
-
+    readData(); 
   }
 
   else if(state == DRIVE){
     readData();
   }
 
-  else if(state == APPROACHSTOP){}
+  else if(state == APPROACHSTOP){
+     
+  }
   else if(state == FINISH){}
   else if(state == TEST){
      #ifdef TEST_
