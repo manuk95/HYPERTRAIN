@@ -8,20 +8,22 @@ modus_t modus;
 void setup() {
   Serial.begin(9600);
 
-  // pinMode(TACHO_PIN, INPUT_PULLUP);
-  // pinMode(ENDSCHALTER_PIN, INPUT_PULLUP);
+  /*
+  * Festlegen der PIN-Modes
+  */ 
+  pinMode(IR_PIN, INPUT);
+  pinMode(U_GLEIS_PIN, INPUT);
+  pinMode(TACHO_PIN, INPUT);
+  pinMode(HALL_LAST_1_PIN, INPUT);
+  pinMode(HALL_LAST_2_PIN, INPUT);
+  pinMode(ENDSCHALTER_PIN, INPUT); 
 
-pinMode(IR_PIN, INPUT);
-pinMode(U_GLEIS_PIN, INPUT);
-pinMode(TACHO_PIN, INPUT);
-pinMode(HALL_LAST_1_PIN, INPUT);
-pinMode(HALL_LAST_2_PIN, INPUT);
-pinMode(ENDSCHALTER_PIN, INPUT); 
-
-pinMode(HBRI_F_PIN, OUTPUT);
-pinMode(HBRI_R_PIN, OUTPUT);
-pinMode(MOT_LAST_PIN, OUTPUT);
-pinMode(USV_DIS_PIN, OUTPUT);
+  pinMode(HBRI_F_PIN, OUTPUT);
+  pinMode(HBRI_R_PIN, OUTPUT);
+  pinMode(MOT_LAST_PIN, OUTPUT);
+  pinMode(USV_DIS_PIN, OUTPUT);
+  pinMode(LED_VORNE_PIN, OUTPUT);
+  pinMode(LED_HINTEN_PIN, OUTPUT);
 
   attachInterrupt(digitalPinToInterrupt(TACHO_PIN), isr_tacho_count, RISING);
   rot_count = 0;
@@ -38,8 +40,6 @@ pinMode(USV_DIS_PIN, OUTPUT);
 
 void loop() {
 
-      
- 
   if(state == WAIT){
     readData(); 
     }
@@ -49,13 +49,13 @@ void loop() {
     start_race = millis();
     load();
     digitalWrite(USV_DIS_PIN, HIGH);
-    sendJson("loaded", "1"); 
+    sendJson("loaded", 1); 
     state = ACCELERATION;
   }
 
   else if(state == ACCELERATION){
     
-    if((set_speed - cur_speed) < 20){
+    if((set_speed - cur_speed) < 50){
       digitalWrite(USV_DIS_PIN, LOW); 
       state = DRIVE;
     }
@@ -69,7 +69,9 @@ void loop() {
   else if(state == APPROACHSTOP){
      readData();
   }
-  else if(state == FINISH){}
+  else if(state == FINISH){
+    readData();
+  }
   else if(state == TEST){
      #ifdef TEST_
       readData(); 

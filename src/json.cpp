@@ -11,16 +11,21 @@
 
 
 /* Die JSON-Daten werden versendet.   */
-void sendJson(const char* action, const char* payload) {
+void sendJson(String sAction, int iPayload){
+      /*
+      char cAction[15];
+      char cPayload[15];
+      sAction.toCharArray(cAction, 15);
+      itoa(iPayload, cPayload, 10);
+      */
+      StaticJsonDocument<200> doc;
 
-  StaticJsonDocument<200> doc;
+      doc["sender"] = "arduino";
+      doc["action"] = sAction;
+      doc["payload"] = iPayload;
 
-  doc["sender"] = "arduino";
-  doc["action"] = action;
-  doc["payload"] = payload;
-
-  serializeJson(doc, Serial);
-  // {"sensor":"gps","time":1351824120,"data":[48.756080,2.302038]}
+      serializeJson(doc, Serial);
+      // {"sensor":"gps","time":1351824120,"data":[48.756080,2.302038]}
 
 }
 
@@ -45,7 +50,7 @@ void parsJSON(char input[70]) {
     }
 
 
-    const char* sender = doc["sender"];
+    // const char* sender = doc["sender"];
     const char* action = doc["action"];
     int payload = doc["payload"].as<int>();
 
@@ -128,13 +133,16 @@ void handleTestData(const char* action, int payload){
           break;
         case 2:
           long hall_start = millis();
-          while(!digitalRead(hall_nbr_pin) && (millis() - hall_start < 6000))
+          while(!digitalRead(hall_nbr_pin) && ((millis() - hall_start) < 6000))
           Serial.print("Time (ms): ");
           Serial.println((millis() - hall_start));
           break;
-
+        
+        /*
         default:
-          break;
+          Serial.print("Hallsensor Anweisung ungültig");
+          break; 
+        */
       }
     }
     else if(strcmp(action, "ENDSCHALTER") == 0)
@@ -172,13 +180,15 @@ void readData(){
 /* Auf ACCERLERATION wird eine -1 gesendet, weil eine ungültige Geschwindigkeit erkannt wurde.   */
 /* Wird auch als JSON-Beispiel verwendet.                                                       */
 void sendJSONAccError(){
+     /*
      String output = "accelerate";
       char action[15];
       char payload[15];
       output.toCharArray(action, 15);
       output = "-1";
       output.toCharArray(payload, 15);
-
-      sendJson(action, payload);
+    */
+      sendJson("accelerate", -1);
+      //sendJson(action, payload);
 }
 

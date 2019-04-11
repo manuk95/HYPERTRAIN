@@ -85,21 +85,34 @@ void PIDupdate()
 
 void PIDOutputLimit()
 {
-  
   maxPWMoutput = (int) 255 * MAX_MOTOR_U / ((analogRead(U_GLEIS_PIN) * 68) / 12);
   myPID.SetOutputLimits((double) 0, (double) maxPWMoutput);
 }
 
 void beschleunigen(int speed)
 {
+  if(speed > 0) { digitalWrite(LED_VORNE_PIN, HIGH); digitalWrite(LED_HINTEN_PIN, LOW); } 
+  else          { digitalWrite(LED_HINTEN_PIN, HIGH); digitalWrite(LED_VORNE_PIN, LOW); }
+
   if(modus == MODE_PID)
   {
+      #ifdef DEBUG_
+          Serial.print("MODE_PID: Start Beschleunigung auf ");
+          Serial.print(speed);
+          Serial.println(" mm/s");
+      #endif
     set_speed = speed;
     start_isr = millis();
     PIDupdate();
   }
   else if(modus == MODE_NORMAL)
   {
+      #ifdef DEBUG_
+          Serial.print("MODE_NORMAL: Start Beschleunigung auf ");
+          Serial.print(speed);
+          Serial.println(" von 255! (oder maxPWMoutput)");
+      #endif
+
     if(speed > Output)
     {
       for(int i = (int) Output; (i < speed) && (i < maxPWMoutput); i++)
@@ -147,21 +160,45 @@ void PWMoutput(int output){
 
 void load(){
   beschleunigen(25);
-  
+      #ifdef DEBUG_
+          Serial.println("Beschleunigung 25");
+          Serial.println("Warten auf Endschalter..");
+      #endif
   
 
   while(!digitalRead(ENDSCHALTER_PIN))
   beschleunigen(0);
+     #ifdef DEBUG_
+          Serial.println("Endschalter gedrückt.");
+          Serial.println("Beschleunigung 0");
+      #endif
 
   digitalWrite(MOT_LAST_PIN, HIGH);
+      #ifdef DEBUG_
+          Serial.println("Last Motor ein");
+          Serial.println("Warten auf Hallsensor2..");
+      #endif
   
   while(!digitalRead(HALL_LAST_2_PIN));
+    #ifdef DEBUG_
+          Serial.println("Hallsensor2 on!");
+    #endif
 
   while(digitalRead(HALL_LAST_2_PIN));
+      #ifdef DEBUG_
+          Serial.println("Hallsensor2 off!");
+          Serial.println("Warten auf Hallsensor2..");
+      #endif
 
   while(!digitalRead(HALL_LAST_2_PIN));
+      #ifdef DEBUG_
+          Serial.println("Hallsensor2 on");
+      #endif
 
   digitalWrite(MOT_LAST_PIN, LOW);
+      #ifdef DEBUG_
+          Serial.println("Lastmotor aus!");
+      #endif
   
 }
 

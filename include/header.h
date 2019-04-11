@@ -4,17 +4,23 @@
 #define DEBUG_
 #define TEST_
 
+// Eingänge
 #define IR_PIN A0
 #define U_GLEIS_PIN A7
 #define TACHO_PIN 2
+#define HALL_LAST_1_PIN A2
+#define HALL_LAST_2_PIN A1
+#define ENDSCHALTER_PIN A3
+
+
+// Ausgänge
 #define HBRI_F_PIN 9
 #define HBRI_R_PIN 10
 #define MOT_LAST_PIN 11
 #define USV_DIS_PIN 12
+#define LED_VORNE_PIN 5
+#define LED_HINTEN_PIN 6
 
-#define HALL_LAST_1_PIN A2
-#define HALL_LAST_2_PIN A1
-#define ENDSCHALTER_PIN A3
 
 
 #define WHEEL_CIRC 300 //x 0.1mm
@@ -66,7 +72,7 @@ extern modus_t modus;
 /*                                      */
 bool checkSpeed();
 void isr_tacho_count();
-void sendJson(const char* action, const char* payload);
+void sendJson(String sAction, int iPayload);
 void parsJSON(char input[]);
 void handleData(const char* action, int payload);
 void handleTestData(const char* action, int payload);
