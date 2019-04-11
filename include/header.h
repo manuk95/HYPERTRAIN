@@ -25,6 +25,8 @@
 
 #define MAX_SPEED 300 // cm/s
 #define MAX_MOTOR_U 15
+#define WAIT_WHILE(start_var, max_zeit) (millis() - start_var < max_zeit)
+
 
 
 
@@ -66,6 +68,9 @@ bool checkSpeed();
 void isr_tacho_count();
 void sendJson(const char* action, const char* payload);
 void parsJSON(char input[]);
+void handleData(const char* action, int payload);
+void handleTestData(const char* action, int payload);
+
 uint16_t get_distanz();
 double radiant();
 void sendJSONAccError();

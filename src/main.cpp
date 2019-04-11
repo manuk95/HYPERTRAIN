@@ -7,14 +7,21 @@ modus_t modus;
 
 void setup() {
   Serial.begin(9600);
-  pinMode (IR_PIN, INPUT);
-  
-  
+
   // pinMode(TACHO_PIN, INPUT_PULLUP);
   // pinMode(ENDSCHALTER_PIN, INPUT_PULLUP);
 
-  pinMode(TACHO_PIN, INPUT);
-  pinMode(ENDSCHALTER_PIN, INPUT);
+pinMode(IR_PIN, INPUT);
+pinMode(U_GLEIS_PIN, INPUT);
+pinMode(TACHO_PIN, INPUT);
+pinMode(HALL_LAST_1_PIN, INPUT);
+pinMode(HALL_LAST_2_PIN, INPUT);
+pinMode(ENDSCHALTER_PIN, INPUT); 
+
+pinMode(HBRI_F_PIN, OUTPUT);
+pinMode(HBRI_R_PIN, OUTPUT);
+pinMode(MOT_LAST_PIN, OUTPUT);
+pinMode(USV_DIS_PIN, OUTPUT);
 
   attachInterrupt(digitalPinToInterrupt(TACHO_PIN), isr_tacho_count, RISING);
   rot_count = 0;
@@ -60,12 +67,12 @@ void loop() {
   }
 
   else if(state == APPROACHSTOP){
-     
+     readData();
   }
   else if(state == FINISH){}
   else if(state == TEST){
      #ifdef TEST_
-      
+      readData(); 
     #endif
 
   }

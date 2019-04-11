@@ -49,13 +49,24 @@ void parsJSON(char input[70]) {
     const char* action = doc["action"];
     int payload = doc["payload"].as<int>();
 
+    handleData(action, payload);
+    
+    #ifdef TEST_
+      handleTestData(action, payload);
+    #endif
 
     // Print values.
+    /*
     Serial.println(sender);
     Serial.println(action);
     Serial.println(payload);
+    */
 
 
+}
+
+void handleData(const char* action, int payload){
+  
     if(strcmp(action, "accelerate") == 0){
       if(payload < 0 || payload > 100) {sendJSONAccError();}
       else {cur_speed = (payload / 100) * MAX_SPEED;}
@@ -76,8 +87,65 @@ void parsJSON(char input[70]) {
       state = TEST;
     }
 
-
 }
+
+#ifdef TEST_
+void handleTestData(const char* action, int payload){
+    
+    if(strcmp(action, "LOAD") == 0)
+    {
+          load();
+    }
+    else if(strcmp(action, "MOTLAST") == 0)
+    {
+          if(payload == 0){
+            digitalWrite(MOT_LAST_PIN, LOW);
+            Serial.println("Stop Motor");
+          }
+          else if(payload < 0)
+          {
+            initLastMotor();
+            Serial.println("INIT MOT");
+          }
+          else
+          {
+            digitalWrite(MOT_LAST_PIN, HIGH);
+            Serial.println("Start Motor");
+          } 
+    }
+    else if(strcmp(action, "HALL") == 0)
+    {
+      int hall_nbr_pin = payload/10;
+      int task = payload - hall_nbr_pin;
+      if(hall_nbr_pin == 1){ hall_nbr_pin = HALL_LAST_1_PIN; }
+      else if(hall_nbr_pin == 2){ hall_nbr_pin = HALL_LAST_2_PIN; }
+
+      switch (task)
+      {
+        case 1:
+          Serial.print("Hallsensor Read: ");
+          Serial.println(digitalRead(hall_nbr_pin)); 
+          break;
+        case 2:
+          long hall_start = millis();
+          while(!digitalRead(hall_nbr_pin) && (millis() - hall_start < 6000))
+          Serial.print("Time (ms): ");
+          Serial.println((millis() - hall_start));
+          break;
+
+        default:
+          break;
+      }
+    }
+    else if(strcmp(action, "ENDSCHALTER") == 0)
+    {
+      long ends_start = millis();
+      while(!digitalRead(ENDSCHALTER_PIN) && WAIT_WHILE(ends_start, 6000))
+      Serial.print("Time (ms): ");
+      Serial.println((millis() - ends_start));
+    }
+}
+#endif
 
 /*                                                              */
 /* Zeichen werden eingelesen und an den Parser weitergegeben.   */
