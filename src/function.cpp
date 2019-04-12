@@ -85,7 +85,10 @@ void PIDupdate()
 
 void PIDOutputLimit()
 {
-  maxPWMoutput = (int) 255 * MAX_MOTOR_U / ((analogRead(U_GLEIS_PIN) * 68) / 12);
+  maxPWMoutput = 255;
+  #ifdef PWM_OITPUT_LIMITS
+    maxPWMoutput = (int) 255 * MAX_MOTOR_U / ((analogRead(U_GLEIS_PIN) * 68) / 12);
+  #endif
   myPID.SetOutputLimits((double) 0, (double) maxPWMoutput);
 }
 
@@ -108,25 +111,32 @@ void beschleunigen(int speed)
   else if(modus == MODE_NORMAL)
   {
       #ifdef DEBUG_
-          Serial.print("MODE_NORMAL: Start Beschleunigung auf ");
+          Serial.print("MODE_NORMAL: Start Beschleunigung von ");
+          Serial.print(Output);
+          Serial.print(" auf ");
           Serial.print(speed);
-          Serial.println(" von 255! (oder maxPWMoutput)");
+          Serial.println("! MAX: 255 (oder maxPWMoutput)");
       #endif
 
     if(speed > Output)
     {
       for(int i = (int) Output; (i < speed) && (i < maxPWMoutput); i++)
       {
-        PWMoutput(i);
+        PWMoutput(i+1);
       }
+      Output = speed;
     }
     else
     {
       for(int i = (int) Output; (i > speed) && (i < maxPWMoutput); i--)
       {
-        PWMoutput(i);
+        PWMoutput(i-1);
       }
+      Output = speed;
     }
+     #ifdef DEBUG_
+          Serial.println("Beschleunigung fertig!");
+      #endif
   }
 }
 
@@ -142,9 +152,14 @@ void PWMoutput(int output){
   }
   else
   {
+    output = output * (-1);
     analogWrite(HBRI_R_PIN, output); 
     delay(50);
   }
+  #ifdef DEBUG_
+          Serial.print("PWMOut: ");
+          Serial.println(output);
+  #endif
   
 
 }
@@ -166,7 +181,7 @@ void load(){
       #endif
   
 
-  while(!digitalRead(ENDSCHALTER_PIN))
+  while(digitalRead(ENDSCHALTER_PIN));
   beschleunigen(0);
      #ifdef DEBUG_
           Serial.println("Endschalter gedrückt.");
@@ -179,18 +194,18 @@ void load(){
           Serial.println("Warten auf Hallsensor2..");
       #endif
   
-  while(!digitalRead(HALL_LAST_2_PIN));
+  while(digitalRead(HALL_LAST_2_PIN));
     #ifdef DEBUG_
           Serial.println("Hallsensor2 on!");
     #endif
 
-  while(digitalRead(HALL_LAST_2_PIN));
+  while(!digitalRead(HALL_LAST_2_PIN));
       #ifdef DEBUG_
           Serial.println("Hallsensor2 off!");
           Serial.println("Warten auf Hallsensor2..");
       #endif
 
-  while(!digitalRead(HALL_LAST_2_PIN));
+  while(digitalRead(HALL_LAST_2_PIN));
       #ifdef DEBUG_
           Serial.println("Hallsensor2 on");
       #endif
@@ -203,9 +218,9 @@ void load(){
 }
 
 void initLastMotor(){
-  
+  long initL_start = millis();
   digitalWrite(MOT_LAST_PIN, HIGH);
-  while(!digitalRead(HALL_LAST_1_PIN));
+  while(digitalRead(HALL_LAST_1_PIN) && WAIT_WHILE(initL_start, 6000));
   digitalWrite(MOT_LAST_PIN, LOW);
 
 }

@@ -3,6 +3,7 @@
 
 #define DEBUG_
 #define TEST_
+// #define PWM_OITPUT_LIMITS
 
 // Eingänge
 #define IR_PIN A0
@@ -79,7 +80,6 @@ void handleTestData(const char* action, int payload);
 
 uint16_t get_distanz();
 double radiant();
-void sendJSONAccError();
 void readData();
 void meas_time();
 

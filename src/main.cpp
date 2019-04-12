@@ -25,15 +25,21 @@ void setup() {
   pinMode(LED_VORNE_PIN, OUTPUT);
   pinMode(LED_HINTEN_PIN, OUTPUT);
 
-  attachInterrupt(digitalPinToInterrupt(TACHO_PIN), isr_tacho_count, RISING);
-  rot_count = 0;
+  pinMode(LED_BUILTIN, OUTPUT);
 
-  sendJSONAccError();    // Test
+  attachInterrupt(digitalPinToInterrupt(TACHO_PIN), isr_tacho_count, RISING);
+
+  PIDOutputLimit();
+
+  rot_count = 0;
+  Output = 0;
   
   set_speed = 0;
-  initLastMotor();
   modus = MODE_NORMAL;
   state = WAIT;
+  digitalWrite(LED_BUILTIN, HIGH); 
+  
+  sendJson("setup", 1);    // Test
 }
 
 

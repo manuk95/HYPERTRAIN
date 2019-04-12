@@ -73,7 +73,7 @@ void parsJSON(char input[70]) {
 void handleData(const char* action, int payload){
   
     if(strcmp(action, "accelerate") == 0){
-      if(payload < 0 || payload > 100) {sendJSONAccError();}
+      if(payload < 0 || payload > 100) {sendJson("accelerate", -1);}
       else {cur_speed = (payload / 100) * MAX_SPEED;}
     }
     else if(strcmp(action, "approachstop") == 0)
@@ -101,6 +101,36 @@ void handleTestData(const char* action, int payload){
     {
           load();
     }
+    else if(strcmp(action, "DRIVE") == 0)
+    {
+        if(payload == 0){
+          digitalWrite(HBRI_F_PIN, LOW);
+          delay(200);
+          digitalWrite(HBRI_R_PIN, LOW); 
+        }
+        else if(payload > 0){
+          digitalWrite(HBRI_R_PIN, LOW); 
+          delay(200);
+          digitalWrite(HBRI_F_PIN, HIGH); 
+        }
+        else
+        {
+          digitalWrite(HBRI_F_PIN, LOW); 
+          delay(200);
+          digitalWrite(HBRI_R_PIN, HIGH); 
+        }
+    }
+    else if(strcmp(action, "ACC") == 0)
+    {
+      Serial.println("accelerate");
+      PWMoutput(payload);
+    }
+    else if (strcmp(action, "beschl") == 0) {
+      Serial.print("beschleunigung: ");
+      Serial.println(payload);
+      beschleunigen(payload);
+    }
+    
     else if(strcmp(action, "MOTLAST") == 0)
     {
           if(payload == 0){
@@ -121,9 +151,17 @@ void handleTestData(const char* action, int payload){
     else if(strcmp(action, "HALL") == 0)
     {
       int hall_nbr_pin = payload/10;
-      int task = payload - hall_nbr_pin;
-      if(hall_nbr_pin == 1){ hall_nbr_pin = HALL_LAST_1_PIN; }
+      int task = payload - hall_nbr_pin*10;
+      if(hall_nbr_pin == 1)     { hall_nbr_pin = HALL_LAST_1_PIN; }
       else if(hall_nbr_pin == 2){ hall_nbr_pin = HALL_LAST_2_PIN; }
+
+      #ifdef DEBUG_
+          Serial.print("hallsensor_nmbr: ");
+          Serial.print(hall_nbr_pin);
+          Serial.print(" task: ");
+          Serial.print(task);
+          Serial.println();
+      #endif
 
       switch (task)
       {
@@ -133,7 +171,7 @@ void handleTestData(const char* action, int payload){
           break;
         case 2:
           long hall_start = millis();
-          while(!digitalRead(hall_nbr_pin) && ((millis() - hall_start) < 6000))
+          while(digitalRead(hall_nbr_pin) && WAIT_WHILE(hall_start, 6000));
           Serial.print("Time (ms): ");
           Serial.println((millis() - hall_start));
           break;
@@ -147,10 +185,19 @@ void handleTestData(const char* action, int payload){
     }
     else if(strcmp(action, "ENDSCHALTER") == 0)
     {
-      long ends_start = millis();
-      while(!digitalRead(ENDSCHALTER_PIN) && WAIT_WHILE(ends_start, 6000))
-      Serial.print("Time (ms): ");
-      Serial.println((millis() - ends_start));
+      switch (payload)
+      {
+        case 1:
+          Serial.print("Endschalter Read: ");
+          Serial.println(digitalRead(ENDSCHALTER_PIN)); 
+          break;
+        case 2:
+          long ends_start = millis();
+          while(digitalRead(ENDSCHALTER_PIN) && WAIT_WHILE(ends_start, 6000));
+          Serial.print("Time (ms): ");
+          Serial.println((millis() - ends_start));
+      }
+      
     }
 }
 #endif
@@ -176,19 +223,4 @@ void readData(){
   }
 }
 
-/*                                                                                               */
-/* Auf ACCERLERATION wird eine -1 gesendet, weil eine ungültige Geschwindigkeit erkannt wurde.   */
-/* Wird auch als JSON-Beispiel verwendet.                                                       */
-void sendJSONAccError(){
-     /*
-     String output = "accelerate";
-      char action[15];
-      char payload[15];
-      output.toCharArray(action, 15);
-      output = "-1";
-      output.toCharArray(payload, 15);
-    */
-      sendJson("accelerate", -1);
-      //sendJson(action, payload);
-}
 
