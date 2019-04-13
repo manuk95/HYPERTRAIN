@@ -41,7 +41,7 @@
 extern int rot_count;
 extern long start_isr;
 extern long start_race;
-extern float dauer;
+
 
 /*            PID Variabeln         */
 extern double set_speed, cur_speed, Output;
@@ -71,19 +71,28 @@ extern modus_t modus;
 /*                                      */
 /*              Funktionen              */
 /*                                      */
-bool checkSpeed();
+
+//variables 
+void initSetupVariables();
+void pinModeSetup();
+
+
+// function
 void isr_tacho_count();
+uint16_t get_distanz();
+double radiant();
+void get_speed();
+void checkTime();
+
+
+// JSON
+void readData();
 void sendJson(String sAction, int iPayload);
 void parsJSON(char input[]);
 void handleData(const char* action, int payload);
 void handleTestData(const char* action, int payload);
 
-uint16_t get_distanz();
-double radiant();
-void readData();
-void meas_time();
-
-
+// DRIVE
 void PIDupdate();
 void PIDsetup();
 void PIDOutputLimit();
@@ -91,10 +100,10 @@ void PIDOutputLimit();
 void beschleunigen(int speed);
 void PWMoutput(int output);
 
-
+// LOADING
 void load();
 void initLastMotor();
 
-void checkTime();
+
 
 #endif
