@@ -86,7 +86,7 @@ void PIDupdate()
 void PIDOutputLimit()
 {
   maxPWMoutput = 255;
-  #ifdef PWM_OITPUT_LIMITS
+  #ifdef PWM_OUTPUT_LIMITS_
     maxPWMoutput = (int) 255 * MAX_MOTOR_U / ((analogRead(U_GLEIS_PIN) * 68) / 12);
   #endif
   myPID.SetOutputLimits((double) 0, (double) maxPWMoutput);

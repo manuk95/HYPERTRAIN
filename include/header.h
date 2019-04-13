@@ -3,7 +3,7 @@
 
 #define DEBUG_
 #define TEST_
-// #define PWM_OITPUT_LIMITS
+// #define PWM_OUTPUT_LIMITS_
 
 // Eingänge
 #define IR_PIN A0
