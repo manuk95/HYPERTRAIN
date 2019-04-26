@@ -72,9 +72,15 @@ void parsJSON(char input[70]) {
 
 void handleData(const char* action, int payload){
   
-    if(strcmp(action, "accelerate") == 0){
+    if(strcmp(action, "start") == 0){
+      state = LOAD;
+    }
+    else if(strcmp(action, "stop") == 0){
+      beschleunigen(0);
+    }
+    else if(strcmp(action, "accelerate") == 0){
       if(payload < 0 || payload > 100) {sendJson("accelerate", -1);}
-      else {cur_speed = (payload / 100) * MAX_SPEED;}
+      else {beschleunigen(255 * payload / 100);}
     }
     else if(strcmp(action, "approachstop") == 0)
     {
@@ -82,14 +88,6 @@ void handleData(const char* action, int payload){
         #ifdef DEBUG_
           Serial.println("Langsames Anhalten");
         #endif
-
-    }
-    else if(strcmp(action, "TEST") == 0)
-    {
-      #ifdef DEBUG_
-          Serial.println("TEST");
-      #endif
-      state = TEST;
     }
 
 }
@@ -100,6 +98,9 @@ void handleTestData(const char* action, int payload){
     if(strcmp(action, "LOAD") == 0)
     {
           load();
+    }
+    else if(strcmp(action, "STOP") == 0){
+      beschleunigen(0);
     }
     else if(strcmp(action, "DRIVE") == 0)
     {
@@ -122,12 +123,16 @@ void handleTestData(const char* action, int payload){
     }
     else if(strcmp(action, "ACC") == 0)
     {
-      Serial.println("accelerate");
+      #ifdef DEBUG_
+        Serial.println("accelerate");
+      #endif
       PWMoutput(payload);
     }
     else if (strcmp(action, "beschl") == 0) {
-      Serial.print("beschleunigung: ");
-      Serial.println(payload);
+      #ifdef DEBUG_
+        Serial.print("beschleunigung: ");
+        Serial.println(payload);
+      #endif
       beschleunigen(payload);
     }
     
@@ -135,17 +140,23 @@ void handleTestData(const char* action, int payload){
     {
           if(payload == 0){
             digitalWrite(MOT_LAST_PIN, LOW);
-            Serial.println("Stop Motor");
+            #ifdef DEBUG_
+              Serial.println("Stop Motor");
+            #endif
           }
           else if(payload < 0)
           {
             initLastMotor();
-            Serial.println("INIT MOT");
+            #ifdef DEBUG_
+              Serial.println("INIT MOT");
+            #endif
           }
           else
           {
             digitalWrite(MOT_LAST_PIN, HIGH);
-            Serial.println("Start Motor");
+            #ifdef DEBUG_
+              Serial.println("Start Motor");
+            #endif
           } 
     }
     else if(strcmp(action, "HALL") == 0)
@@ -166,14 +177,18 @@ void handleTestData(const char* action, int payload){
       switch (task)
       {
         case 1:
-          Serial.print("Hallsensor Read: ");
+          #ifdef DEBUG_
+            Serial.print("Hallsensor Read: ");
+          #endif
           Serial.println(digitalRead(hall_nbr_pin)); 
           break;
         case 2:
           long hall_start = millis();
           while(digitalRead(hall_nbr_pin) && WAIT_WHILE(hall_start, 6000));
-          Serial.print("Time (ms): ");
-          Serial.println((millis() - hall_start));
+          #ifdef DEBUG_
+            Serial.print("Time (ms): ");
+            Serial.println((millis() - hall_start));
+          #endif
           break;
         
         /*

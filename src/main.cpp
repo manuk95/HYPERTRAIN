@@ -24,24 +24,23 @@ void loop() {
 
   if(state == WAIT){
     readData(); 
-    }
+  }
 
 
   else if(state == LOAD){
     start_race = millis();
+    if(!check_init_lastmotor) {initLastMotor();}
     load();
     digitalWrite(USV_DIS_PIN, HIGH);
     sendJson("loaded", 1); 
     state = ACCELERATION;
+    start_acc = millis();
   }
 
   else if(state == ACCELERATION){
-    
-    if((set_speed - cur_speed) < 50){
+    while(WAIT_WHILE(start_acc, 3000));
       digitalWrite(USV_DIS_PIN, LOW); 
       state = DRIVE;
-    }
-    readData(); 
   }
 
   else if(state == DRIVE){
@@ -50,16 +49,18 @@ void loop() {
 
   else if(state == APPROACHSTOP){
      readData();
+     last_step = get_distanz();
+     state = STOPPING;
+  }
+  else if(state == STOPPING){
+    readData();
   }
   else if(state == FINISH){
     readData();
+    if(!check_init_lastmotor){initLastMotor();}
   }
-  else if(state == TEST){
-     #ifdef TEST_
-      readData(); 
-    #endif
-
-  }
+  checkTime();
+  get_distanz();
 
 }
 

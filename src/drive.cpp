@@ -3,8 +3,12 @@
 #include <PID_v1.h>
 
 /********************************************************
- * PID Basic Example
- * Reading analog input 0 to control analog PWM output 3
+ * DRIVE
+ * Zwei drive-modi:     MODE_PID    (Regelung)
+ *                      MODE_NORMAL (Steuerung)
+ *
+ * Wird PWM_OUTPUT_LIMITS_ definiert, wird die Motor-Spannung auf MAX_MOTOR_U begrenzt.
+ * 
  ********************************************************/
 
 //Specify the links and initial tuning parameters
@@ -22,7 +26,6 @@ void PIDsetup()
 
 void PIDupdate()
 {
- // Input = analogRead(PIN_INPUT);
   myPID.Compute();
   analogWrite(HBRI_F_PIN, Output); //PWM Output 0=always off, 255= always on
 }
@@ -38,8 +41,8 @@ void PIDOutputLimit()
 
 void beschleunigen(int speed)
 {
-  if(speed > 0) { digitalWrite(LED_VORNE_PIN, HIGH); digitalWrite(LED_HINTEN_PIN, LOW); } 
-  else          { digitalWrite(LED_HINTEN_PIN, HIGH); digitalWrite(LED_VORNE_PIN, LOW); }
+  if(speed >= 0)  { digitalWrite(LED_VORNE_PIN, HIGH); digitalWrite(LED_HINTEN_PIN, LOW); } 
+  else            { digitalWrite(LED_HINTEN_PIN, HIGH); digitalWrite(LED_VORNE_PIN, LOW); }
 
   if(modus == MODE_PID)
   {
@@ -48,7 +51,7 @@ void beschleunigen(int speed)
           Serial.print(speed);
           Serial.println(" mm/s");
       #endif
-    set_speed = speed;
+    set_speed = speed/255 * MAX_SPEED;
     start_isr = millis();
     PIDupdate();
   }

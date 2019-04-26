@@ -2,18 +2,19 @@
 #include <header.h>
 
 /********************************************************
- * Hier werden alle globalen Variabeln definiert
+ * Globale Variabeln deklarieren und initialisieren
+ * allg. Setup-Funktionen implementieren
  * 
- * 
- * 
- * 
- *  
  ********************************************************/
 
 int rot_count;
 long start_isr;
 long start_race;
+long start_acc;
+
 double set_speed, cur_speed, Output;
+bool check_init_lastmotor;
+int last_step;
 
 state_t state;
 modus_t modus;
@@ -25,6 +26,8 @@ void initSetupVariables()
     set_speed = 0;
     modus = MODE_NORMAL;
     state = WAIT;
+    check_init_lastmotor = false;
+    last_step = -1;
 }
 
 void pinModeSetup()

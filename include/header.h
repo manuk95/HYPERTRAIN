@@ -1,7 +1,7 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-#define DEBUG_
+//#define DEBUG_
 #define TEST_
 // #define PWM_OUTPUT_LIMITS_
 
@@ -24,7 +24,8 @@
 
 
 
-#define WHEEL_CIRC 300 //x 0.1mm
+#define WHEEL_CIRC 942 //x 0.1mm
+#define ANZAHL_MAGNETE 4
 #define MAX_STRECKE 1700 // in cm, zwei Runden
 #define MAX_ROT_COUNT 567 // MAX_STRECKE / (cm) WHEEL_CIRC = 567
 
@@ -41,7 +42,9 @@
 extern int rot_count;
 extern long start_isr;
 extern long start_race;
-
+extern long start_acc;
+extern bool check_init_lastmotor;
+extern int last_step;
 
 /*            PID Variabeln         */
 extern double set_speed, cur_speed, Output;
@@ -55,8 +58,8 @@ enum state_t {
   ACCELERATION,
   DRIVE,
   APPROACHSTOP,
-  FINISH,
-  TEST
+  STOPPING,
+  FINISH
 };
 
 enum modus_t {

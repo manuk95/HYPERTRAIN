@@ -1,14 +1,14 @@
 #include <Arduino.h>
 #include <header.h>
 
-/********************************************************
+/****************************************************************************
  * LAST AUFLADEN
- * initLastMotor bringt den Aufnahmemechanismus in die richtige Stellung.
+ * initLastMotor() bringt den Aufnahmemechanismus in die Ausgangsstellung.
  * 
- * Wenn der Endschalter betätigt wird, start_isret der Motor.
- * Nach zwei gemessenen Umdrehungen ist die Last aufgeladen
- * und der Motor schaltet aus. 
- ********************************************************/
+ * load()   Wenn der Endschalter betätigt wird, startet der Motor.
+ *          Nach zwei gemessenen Umdrehungen ist die Last aufgeladen
+ *          und der Motor schaltet aus. 
+ ****************************************************************************/
 
 void load(){
   beschleunigen(25);
@@ -51,7 +51,7 @@ void load(){
       #ifdef DEBUG_
           Serial.println("Lastmotor aus!");
       #endif
-  
+  check_init_lastmotor = false;
 }
 
 void initLastMotor(){
@@ -59,5 +59,6 @@ void initLastMotor(){
   digitalWrite(MOT_LAST_PIN, HIGH);
   while(digitalRead(HALL_LAST_1_PIN) && WAIT_WHILE(initL_start, 6000));
   digitalWrite(MOT_LAST_PIN, LOW);
+  check_init_lastmotor = true;
 
 }
