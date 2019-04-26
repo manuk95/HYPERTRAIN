@@ -13,9 +13,10 @@ void setup() {
 
   initSetupVariables();
 
-  digitalWrite(LED_BUILTIN, HIGH); 
-  
+  setLEDstate();
+
   sendJson("setup", 1);    // Test
+
 }
 
 
@@ -23,23 +24,23 @@ void setup() {
 void loop() {
 
   if(state == WAIT){
+    if(!check_init_lastmotor) {initLastMotor();}
     readData(); 
   }
 
 
   else if(state == LOAD){
     start_race = millis();
-    if(!check_init_lastmotor) {initLastMotor();}
     load();
-    digitalWrite(USV_DIS_PIN, HIGH);
+    //digitalWrite(USV_DIS_PIN, HIGH);
     sendJson("loaded", 1); 
     state = ACCELERATION;
     start_acc = millis();
   }
 
   else if(state == ACCELERATION){
-    while(WAIT_WHILE(start_acc, 3000));
-      digitalWrite(USV_DIS_PIN, LOW); 
+   // while(WAIT_WHILE(start_acc, 3000));
+      //digitalWrite(USV_DIS_PIN, LOW); 
       state = DRIVE;
   }
 
@@ -49,15 +50,16 @@ void loop() {
 
   else if(state == APPROACHSTOP){
      readData();
+     while(getLastStep() == 0);
      last_step = get_distanz();
      state = STOPPING;
+     sendJson("STOPPING", last_step);
   }
   else if(state == STOPPING){
     readData();
   }
   else if(state == FINISH){
     readData();
-    if(!check_init_lastmotor){initLastMotor();}
   }
   checkTime();
   get_distanz();

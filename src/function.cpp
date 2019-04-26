@@ -16,17 +16,26 @@ void isr_tacho_count(){
   rot_count++;
   get_speed();
   
+  #ifdef TEST_ROT
+    digitalWrite(LED_HINTEN_PIN, !digitalRead(LED_HINTEN_PIN));
+  #endif
+  
   if(modus == MODE_PID) {PIDupdate();}
   if(rot_count >= MAX_ROT_COUNT)
   {
     rot_count = 0;
-    if(state == DRIVE || state == ACCELERATION) {state = APPROACHSTOP;}
+    if(state == DRIVE || state == ACCELERATION) 
+    {
+      if(Output > 25) {beschleunigen(25);}
+      state = APPROACHSTOP;
+    }
   }
   if(state == STOPPING)
   {
       last_step -= WHEEL_CIRC/ANZAHL_MAGNETE * 10;
       if(last_step < WHEEL_CIRC/ANZAHL_MAGNETE){
         beschleunigen(0);
+        state = FINISH;
       }
   }
 }
@@ -43,6 +52,7 @@ uint16_t get_distanz()
 {
   uint16_t range = get_gp2d12();
   uint16_t distanz = range * cos(radiant());
+  
   #ifdef DEBUG_
    // Serial.print("Range: ");    Serial.print(range);      Serial.println(" mm");
    //  Serial.print("Distanz: ");  Serial.print(distanz);    Serial.println(" mm");
@@ -72,6 +82,19 @@ double radiant()
   return (double) (IR_WINKEL / 360 * 2 * 3.14);
 }
 
+uint16_t getLastStep()
+{
+  while((int)0 == (int)get_distanz());
+  delay(20);
+  if(get_distanz() != 0){
+    return get_distanz();
+  }
+  else
+  {
+    return 0;
+  }
+  
+}
 
 
 /********************************************************

@@ -2,8 +2,11 @@
 #define HEADER_H
 
 //#define DEBUG_
+//#define DEBUG_2
 #define TEST_
+#define TEST_ROT
 // #define PWM_OUTPUT_LIMITS_
+#define PWM_LOAD_MOTOR
 
 // Eingänge
 #define IR_PIN A0
@@ -27,7 +30,7 @@
 #define WHEEL_CIRC 942 //x 0.1mm
 #define ANZAHL_MAGNETE 4
 #define MAX_STRECKE 1700 // in cm, zwei Runden
-#define MAX_ROT_COUNT 567 // MAX_STRECKE / (cm) WHEEL_CIRC = 567
+#define MAX_ROT_COUNT (MAX_STRECKE / (WHEEL_CIRC / ANZAHL_MAGNETE)) 
 
 #define IR_WINKEL 20 // in GRAD
 
@@ -78,11 +81,13 @@ extern modus_t modus;
 //variables 
 void initSetupVariables();
 void pinModeSetup();
+void setLEDstate();
 
 
 // function
 void isr_tacho_count();
 uint16_t get_distanz();
+uint16_t getLastStep();
 double radiant();
 void get_speed();
 void checkTime();

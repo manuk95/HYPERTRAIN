@@ -91,19 +91,19 @@ void PWMoutput(int output){
   if(output == 0){
     analogWrite(HBRI_F_PIN, output); 
     analogWrite(HBRI_R_PIN, output); 
-    delay(50);
+    delay(10);
   }
   else if(output > 0){
     analogWrite(HBRI_F_PIN, output); 
-    delay(50);
+    delay(10);
   }
   else
   {
     output = output * (-1);
     analogWrite(HBRI_R_PIN, output); 
-    delay(50);
+    delay(10);
   }
-  #ifdef DEBUG_
+  #ifdef DEBUG_2
           Serial.print("PWMOut: ");
           Serial.println(output);
   #endif

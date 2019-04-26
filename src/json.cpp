@@ -77,14 +77,19 @@ void handleData(const char* action, int payload){
     }
     else if(strcmp(action, "stop") == 0){
       beschleunigen(0);
+      if(state == FINISH) { state = WAIT; }
+      else                { state = FINISH; }
     }
     else if(strcmp(action, "accelerate") == 0){
-      if(payload < 0 || payload > 100) {sendJson("accelerate", -1);}
-      else {beschleunigen(255 * payload / 100);}
+      if(state == DRIVE || state == ACCELERATION)
+      {
+        if(payload < 0 || payload > 100) {sendJson("accelerate", -1);}
+        else {beschleunigen(255 * payload / 100);}
+      }
     }
     else if(strcmp(action, "approachstop") == 0)
     {
-      state = APPROACHSTOP;
+      if(state == DRIVE || state == ACCELERATION) {state = APPROACHSTOP;}
         #ifdef DEBUG_
           Serial.println("Langsames Anhalten");
         #endif

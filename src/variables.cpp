@@ -51,3 +51,9 @@ void pinModeSetup()
 
   attachInterrupt(digitalPinToInterrupt(TACHO_PIN), isr_tacho_count, RISING);
 }
+
+void setLEDstate()
+{
+  digitalWrite(LED_VORNE_PIN, HIGH); 
+  digitalWrite(LED_HINTEN_PIN, LOW);
+}

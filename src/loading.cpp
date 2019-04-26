@@ -12,13 +12,15 @@
 
 void load(){
   beschleunigen(25);
+  uint16_t beschl_time = millis();
       #ifdef DEBUG_
           Serial.println("Beschleunigung 25");
           Serial.println("Warten auf Endschalter..");
       #endif
   
-
-  while(digitalRead(ENDSCHALTER_PIN));
+    uint16_t load_wait_start = millis();
+  while(digitalRead(ENDSCHALTER_PIN) && WAIT_WHILE(load_wait_start, 10000));
+  beschl_time = millis() - beschl_time;
   beschleunigen(0);
      #ifdef DEBUG_
           Serial.println("Endschalter gedrückt.");
@@ -30,19 +32,22 @@ void load(){
           Serial.println("Last Motor ein");
           Serial.println("Warten auf Hallsensor2..");
       #endif
-  
-  while(digitalRead(HALL_LAST_2_PIN));
+
+  load_wait_start = millis();
+  while(digitalRead(HALL_LAST_2_PIN) && WAIT_WHILE(load_wait_start, 6000));
     #ifdef DEBUG_
           Serial.println("Hallsensor2 on!");
     #endif
 
-  while(!digitalRead(HALL_LAST_2_PIN));
+  load_wait_start = millis();
+  while(!digitalRead(HALL_LAST_2_PIN) && WAIT_WHILE(load_wait_start, 500));
       #ifdef DEBUG_
           Serial.println("Hallsensor2 off!");
           Serial.println("Warten auf Hallsensor2..");
       #endif
 
-  while(digitalRead(HALL_LAST_2_PIN));
+  load_wait_start = millis();
+  while(digitalRead(HALL_LAST_2_PIN) && WAIT_WHILE(load_wait_start, 6000));
       #ifdef DEBUG_
           Serial.println("Hallsensor2 on");
       #endif
@@ -52,11 +57,22 @@ void load(){
           Serial.println("Lastmotor aus!");
       #endif
   check_init_lastmotor = false;
+
+    
+    beschleunigen(-25);
+    load_wait_start = millis();
+    while(WAIT_WHILE(load_wait_start, beschl_time));
+    beschleunigen(0);
+
 }
 
 void initLastMotor(){
   long initL_start = millis();
-  digitalWrite(MOT_LAST_PIN, HIGH);
+    #ifndef PWM_LOAD_MOTOR
+        digitalWrite(MOT_LAST_PIN, HIGH);
+    #else
+        analogWrite(MOT_LAST_PIN, 100);
+    #endif
   while(digitalRead(HALL_LAST_1_PIN) && WAIT_WHILE(initL_start, 6000));
   digitalWrite(MOT_LAST_PIN, LOW);
   check_init_lastmotor = true;
