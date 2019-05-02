@@ -28,3 +28,9 @@ $ git checkout -b new_branch
 
 
 
+#current branch to master
+git checkout better_branch
+git merge --strategy=ours --no-commit master     # keep the content of this branch, but record a merge
+git commit -m "curBranch set as Master"       # add information to the template merge message
+git checkout master
+git merge better_branch             # fast-forward master up to the merge

@@ -36,6 +36,7 @@ void isr_tacho_count(){
       if(last_step < WHEEL_CIRC/ANZAHL_MAGNETE){
         beschleunigen(0);
         state = FINISH;
+        sendJson("FINISH", last_step);
       }
   }
 }

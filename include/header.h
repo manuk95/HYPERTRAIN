@@ -4,9 +4,10 @@
 //#define DEBUG_
 //#define DEBUG_2
 #define TEST_
-#define TEST_ROT
+//#define TEST_ROT
 // #define PWM_OUTPUT_LIMITS_
 #define PWM_LOAD_MOTOR
+#define RASPI_COMMUNICATION_OFF
 
 // Eingänge
 #define IR_PIN A0

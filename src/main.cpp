@@ -26,6 +26,10 @@ void loop() {
   if(state == WAIT){
     if(!check_init_lastmotor) {initLastMotor();}
     readData(); 
+    #ifdef RASPI_COMMUNICATION_OFF
+      delay(1000);
+      state = LOAD;
+    #endif
   }
 
 
@@ -41,6 +45,9 @@ void loop() {
   else if(state == ACCELERATION){
    // while(WAIT_WHILE(start_acc, 3000));
       //digitalWrite(USV_DIS_PIN, LOW); 
+      #ifdef RASPI_COMMUNICATION_OFF
+        beschleunigen(255);
+      #endif
       state = DRIVE;
   }
 

@@ -46,6 +46,7 @@ void parsJSON(char input[70]) {
     if (error) {
       Serial.print(F("deserializeJson() failed: "));
       Serial.println(error.c_str());
+      Serial.println(input);
       return;
     }
 
