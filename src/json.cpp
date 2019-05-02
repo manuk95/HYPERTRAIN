@@ -236,7 +236,16 @@ void readData(){
         command[readNumber] =currentChar;
         parsJSON(command);
         readNumber =0;
-      } else
+      } 
+
+      else if(currentChar == '{')
+      {
+       readNumber =0; 
+       command[readNumber] =currentChar;
+       readNumber++;
+      }
+
+      else
       {
         command[readNumber] = currentChar ; 
         readNumber++;

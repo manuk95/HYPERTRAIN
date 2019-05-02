@@ -104,16 +104,26 @@ uint16_t getLastStep()
  ********************************************************/
 void checkTime()
 {
-  if((millis() - start_race) > 130000){
-    if(state < 3){
+  long runTime = millis() - start_acc;
+
+  if(runTime > 60000){
+    if(state < 4){
+      beschleunigen(25);
       state = APPROACHSTOP;
     }
   }
-  else if((millis() - start_race) > 240000)
+  else if(runTime > 70000)
   {
-    beschleunigen(0);
-    state = FINISH;
+    if(state != FINISH)
+    {
+      beschleunigen(0);
+      state = FINISH;
+    }
   }
+
+
+
+
 
   #ifndef TEST_
     if((millis() % 1000 == 0))

@@ -64,6 +64,7 @@ void beschleunigen(int speed)
           Serial.print(speed);
           Serial.println("! MAX: 255 (oder maxPWMoutput)");
       #endif
+      set_speed = speed;
 
     if(speed > Output)
     {
