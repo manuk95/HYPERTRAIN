@@ -106,10 +106,11 @@ void checkTime()
 {
   long runTime = millis() - start_acc;
 
-  if(runTime > 60000){
+  if(runTime > 10000){
     if(state < 4){
       beschleunigen(25);
       state = APPROACHSTOP;
+      sendJson("approachstop", runTime);
     }
   }
   else if(runTime > 70000)

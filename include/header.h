@@ -114,5 +114,12 @@ void load();
 void initLastMotor();
 
 
+/*                                      */
+/*              THREADS                 */
+/*                                      */
+extern ThreadController controll
+extern Thread threadReadData 
+extern Thread threadProgramm 
+extern Thread threadCheckTime 
 
 #endif

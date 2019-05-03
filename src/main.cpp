@@ -37,6 +37,7 @@ void loop() {
 
   else if(state == LOAD){
     start_race = millis();
+    start_acc = millis();
     load();
     //digitalWrite(USV_DIS_PIN, HIGH);
     sendJson("loaded", 1); 
@@ -48,7 +49,7 @@ void loop() {
    // while(WAIT_WHILE(start_acc, 3000));
       //digitalWrite(USV_DIS_PIN, LOW); 
       #ifdef RASPI_COMMUNICATION_OFF
-        beschleunigen(255);
+        beschleunigen(50);
       #endif
       state = DRIVE;
   }
