@@ -12,13 +12,13 @@
 
 void load(){
   beschleunigen(25);
-  uint16_t beschl_time = millis();
+  unsigned long beschl_time = millis();
       #ifdef DEBUG_
           Serial.println("Beschleunigung 25");
           Serial.println("Warten auf Endschalter..");
       #endif
   
-    uint16_t load_wait_start = millis();
+    unsigned long load_wait_start = millis();
   while(digitalRead(ENDSCHALTER_PIN) && WAIT_WHILE(load_wait_start, 7000));
   //while(digitalRead(ENDSCHALTER_PIN));
   beschl_time = millis() - beschl_time;

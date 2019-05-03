@@ -7,6 +7,10 @@
  * 
  ********************************************************/
 
+bool threadProgramm_restart;
+bool threadReadData_restart;
+bool threadCheckTime_restart;
+
 int rot_count;
 long start_isr;
 long start_race;

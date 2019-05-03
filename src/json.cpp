@@ -75,11 +75,18 @@ void handleData(const char* action, int payload){
   
     if(strcmp(action, "start") == 0){
       state = LOAD;
+      start_race = millis();
+		  start_acc = millis();
     }
     else if(strcmp(action, "stop") == 0){
       beschleunigen(0);
-      if(state == FINISH) { state = WAIT; }
+      if(state == FINISH) { state = WAIT; 
+                            start_race = millis();
+		                        start_acc = millis(); }
       else                { state = FINISH; }
+      #ifdef DEBUG_
+        Serial.println("## stop");
+      #endif
     }
     else if(strcmp(action, "accelerate") == 0){
       if(state == DRIVE || state == ACCELERATION)
@@ -227,6 +234,11 @@ void handleTestData(const char* action, int payload){
 /* Zeichen werden eingelesen und an den Parser weitergegeben.   */
 /*                                                              */
 void readData(){
+   #ifdef DEBUG_2
+        Serial.println(" -");
+       Serial.println(millis());
+    #endif
+
   if (Serial.available() > 0) {
       int input = 0;
       input = Serial.read();

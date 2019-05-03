@@ -17,12 +17,23 @@ void setup() {
 
   setLEDstate();
 
+  thread_init();
+
   sendJson("setup", 1);    // Test
 
 }
 
+void loop() {
+  
+  controll.run();
+  readData();
 
 
+
+}
+
+
+/*
 void loop() {
 
   if(state == WAIT){
@@ -72,7 +83,6 @@ void loop() {
     readData();
   }
   checkTime();
-  get_distanz();
 
 }
-
+*/

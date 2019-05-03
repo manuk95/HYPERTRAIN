@@ -32,7 +32,7 @@ void isr_tacho_count(){
   }
   if(state == STOPPING)
   {
-      last_step -= WHEEL_CIRC/ANZAHL_MAGNETE * 10;
+      last_step -= (WHEEL_CIRC/ANZAHL_MAGNETE / 10); // last_step in mm
       if(last_step < WHEEL_CIRC/ANZAHL_MAGNETE){
         beschleunigen(0);
         state = FINISH;
@@ -52,7 +52,7 @@ void get_speed(){
 uint16_t get_distanz()
 {
   uint16_t range = get_gp2d12();
-  uint16_t distanz = range * cos(radiant());
+  uint16_t distanz = range; //* cos(radiant());
   
   #ifdef DEBUG_
    // Serial.print("Range: ");    Serial.print(range);      Serial.println(" mm");
@@ -119,6 +119,7 @@ void checkTime()
     {
       beschleunigen(0);
       state = FINISH;
+      sendJson("finish", runTime);
     }
   }
 

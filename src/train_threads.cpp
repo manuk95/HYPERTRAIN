@@ -1,106 +1,107 @@
 #include <Thread.h>
 #include <ThreadController.h>
+#include <TimerOne.h>
 #include <header.h>
 
-/*
-// ThreadController that will controll all threads
+
 ThreadController controll = ThreadController();
+ThreadController timer_control = ThreadController();
 
-//My Thread
+
 Thread threadReadData = Thread();
-//His Thread
-Thread threadBeschleunigen = Thread();
-//Blink Led Thread
 Thread threadProgramm = Thread();
+Thread threadCheckTime = Thread();
 
 
-// callback for threadBeschleunigen	
-void thBeschleunigen()
+void thReadData()
 {
-  if(modus == MODE_NORMAL)
-  {
-		set_speed;
+	readData();
+}
 
-		if(set_speed > Output)
-		{
-		for(int i = (int) Output; (i < set_speed) && (i < maxPWMoutput); i++)
-		{
-			PWMoutput(i+1);
-		}
-		Output = set_speed;
-		}
-		else
-		{
-		for(int i = (int) Output; (i > set_speed) && (i < maxPWMoutput); i--)
-		{
-			PWMoutput(i-1);
-		}
-		Output = set_speed;
-		}
+void thProgramm(){
 
+	if(state == WAIT){
+		if(!check_init_lastmotor) {initLastMotor();}
+		#ifdef RASPI_COMMUNICATION_OFF
+		delay(1000);
+		state = LOAD;
+		#endif
+  	}
+
+
+  	else if(state == LOAD){
+		start_race = millis();
+		start_acc = millis();
+		load();
+		//digitalWrite(USV_DIS_PIN, HIGH);
+		sendJson("loaded", 1); 
+		state = ACCELERATION;
+		start_acc = millis();
+  	}
+
+  	else if(state == ACCELERATION){
+		// while(WAIT_WHILE(start_acc, 3000));
+		//digitalWrite(USV_DIS_PIN, LOW); 
+		#ifdef RASPI_COMMUNICATION_OFF
+			beschleunigen(50);
+		#endif
+		state = DRIVE;
+  	}
+
+  else if(state == DRIVE){
+    
   }
 
-  if(set_speed >= 0)  { digitalWrite(LED_VORNE_PIN, HIGH); digitalWrite(LED_HINTEN_PIN, LOW); } 
-  else            { digitalWrite(LED_HINTEN_PIN, HIGH); digitalWrite(LED_VORNE_PIN, LOW); }
+  else if(state == APPROACHSTOP){
+     
+     while(getLastStep() == 0 && state == APPROACHSTOP);
+	 if(state == APPROACHSTOP)
+	 {
+		last_step = get_distanz();
+		state = STOPPING;
+		sendJson("STOPPING", last_step);
+	 }
+  }
+  else if(state == STOPPING){
+    
+  }
+  else if(state == FINISH){
+    
+  }
 }
 
-
+void thCheckTime()
+{
+	checkTime();
 }
 
-// callback for hisThread
-void boringCallback(){
-	Serial.println("BORING...");
+void timerCallback(){
+	timer_control.run();
 }
 
-// callback for blinkLedThread
-void blinkLed(){
-	static bool ledStatus = false;
-	ledStatus = !ledStatus;
+void thread_init(){
 
-	digitalWrite(ledPin, ledStatus);
-
-	Serial.print("blinking: ");
-	Serial.println(ledStatus);
-}
-
-void setup(){
-	Serial.begin(9600);
-
-	pinMode(ledPin, OUTPUT);
-
-	// Configure myThread
-	myThread.onRun(niceCallback);
-	myThread.setInterval(500);
+	//threadReadData.onRun(thReadData);
+	//threadReadData.setInterval(20);
 
 	// Configure hisThread
-	hisThread.onRun(boringCallback);
-	hisThread.setInterval(250);
+	threadProgramm.onRun(thProgramm);
+	threadProgramm.setInterval(20);
 	
-	// Configure blinkLedThread
-	blinkLedThread.onRun(blinkLed);
-	blinkLedThread.setInterval(100);
+	threadCheckTime.onRun(thCheckTime);
+	threadCheckTime.setInterval(250);
 
-	// Adds myThread to the controll
-	controll.add(&myThread);
-
-	// Adds hisThread and blinkLedThread to groupOfThreads
-	groupOfThreads.add(&hisThread);
-	groupOfThreads.add(&blinkLedThread);
-
-	// Add groupOfThreads to controll
-	controll.add(&groupOfThreads);
-	
+	// Adds to the controll
+	//controll.add(&threadReadData);
+	controll.add(&threadCheckTime);
+	controll.add(&threadProgramm);
+//	timer_control.add(&threadReadData);
+/*
+	Timer1.initialize(50000);
+	Timer1.attachInterrupt(timerCallback);
+	Timer1.start();
+	*/
 }
 
-void loop(){
-	// run ThreadController
-	// this will check every thread inside ThreadController,
-	// if it should run. If yes, he will run it;
-	controll.run();
 
-	// Rest of code
-	float h = 3.1415;
-	h/=2;
-}
 
-*/

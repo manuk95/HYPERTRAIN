@@ -1,8 +1,11 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-//#define DEBUG_
-//#define DEBUG_2
+#include <Thread.h>
+#include <ThreadController.h>
+
+#define DEBUG_
+#define DEBUG_2
 #define TEST_
 //#define TEST_ROT
 // #define PWM_OUTPUT_LIMITS_
@@ -117,9 +120,12 @@ void initLastMotor();
 /*                                      */
 /*              THREADS                 */
 /*                                      */
-extern ThreadController controll
-extern Thread threadReadData 
-extern Thread threadProgramm 
-extern Thread threadCheckTime 
+extern ThreadController controll;
+extern ThreadController timer_control;
+extern Thread threadReadData;
+extern Thread threadProgramm;
+extern Thread threadCheckTime; 
+
+void thread_init();
 
 #endif
