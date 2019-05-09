@@ -21,14 +21,15 @@ bool check_init_lastmotor;
 int last_step;
 
 state_t state;
-modus_t modus;
+acc_modus_t acc_modus;
+drive_modus_t drive_modus;
 
 void initSetupVariables()
 {
     rot_count = 0;
     Output = 0;
     set_speed = 0;
-    modus = MODE_NORMAL;
+    acc_modus = MODE_NORMAL;
     state = WAIT;
     check_init_lastmotor = false;
     last_step = -1;

@@ -67,6 +67,7 @@ void load(){
     load_wait_start = millis();
     while(WAIT_WHILE(load_wait_start, beschl_time));
     beschleunigen(0);
+    rot_count = 0;
 
 }
 

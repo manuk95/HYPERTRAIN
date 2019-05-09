@@ -11,36 +11,6 @@ uint16_t get_gp2d12 () {
   return  local_distanz; // Distanz in mm
 }
 
-/* *** *** *** *** *** *** *** *** *** *** *** *** *** ***  COUNT  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** */
-void isr_tacho_count(){
-  rot_count++;
-  get_speed();
-  
-  #ifdef TEST_ROT
-    digitalWrite(LED_HINTEN_PIN, !digitalRead(LED_HINTEN_PIN));
-  #endif
-  
-  if(modus == MODE_PID) {PIDupdate();}
-  if(rot_count >= MAX_ROT_COUNT)
-  {
-    rot_count = 0;
-    if(state == DRIVE || state == ACCELERATION) 
-    {
-      if(Output > 25) {beschleunigen(25);}
-      state = APPROACHSTOP;
-    }
-  }
-  if(state == STOPPING)
-  {
-      last_step -= (WHEEL_CIRC/ANZAHL_MAGNETE / 10); // last_step in mm
-      if(last_step < WHEEL_CIRC/ANZAHL_MAGNETE){
-        beschleunigen(0);
-        state = FINISH;
-        sendJson("FINISH", last_step);
-      }
-  }
-}
-
 /* *** *** *** *** *** *** *** *** *** *** *** *** *** ***  GET SPEED  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** */
 void get_speed(){
   float dauer = millis() - start_isr;
@@ -60,7 +30,7 @@ uint16_t get_distanz()
   #endif
 
   #ifdef TEST_
-    if(range < 100)
+    if(range < 200)
     {
         digitalWrite(LED_BUILTIN, HIGH);
     }
@@ -70,17 +40,12 @@ uint16_t get_distanz()
     }
   #endif
 
-  if(distanz < 100)
+  if(distanz < 200)
   {
     return distanz;
   }
   distanz = 0;
   return distanz;
-}
-
-double radiant()
-{
-  return (double) (IR_WINKEL / 360 * 2 * 3.14);
 }
 
 uint16_t getLastStep()
@@ -106,14 +71,14 @@ void checkTime()
 {
   long runTime = millis() - start_acc;
 
-  if(runTime > 10000){
+  if(runTime > 180000){
     if(state < 4){
       beschleunigen(25);
       state = APPROACHSTOP;
       sendJson("approachstop", runTime);
     }
   }
-  else if(runTime > 70000)
+  else if(runTime > 240000)
   {
     if(state != FINISH)
     {

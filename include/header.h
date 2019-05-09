@@ -4,13 +4,15 @@
 #include <Thread.h>
 #include <ThreadController.h>
 
+
+// Configure DEBUG- / TEST- LEVEL & FUNCTION
 #define DEBUG_
-#define DEBUG_2
+//#define DEBUG_2
 #define TEST_
-//#define TEST_ROT
+//#define TEST_ROT    
 // #define PWM_OUTPUT_LIMITS_
 #define PWM_LOAD_MOTOR
-#define RASPI_COMMUNICATION_OFF
+//#define RASPI_COMMUNICATION_OFF
 
 // Eingänge
 #define IR_PIN A0
@@ -29,21 +31,14 @@
 #define LED_VORNE_PIN 5
 #define LED_HINTEN_PIN 6
 
-
-
 #define WHEEL_CIRC 942 //x 0.1mm
 #define ANZAHL_MAGNETE 4
-#define MAX_STRECKE 1700 // in cm, zwei Runden
+#define MAX_STRECKE 230000 //(23 * 10000) // in 0.1mm, zwei Runden
 #define MAX_ROT_COUNT (MAX_STRECKE / (WHEEL_CIRC / ANZAHL_MAGNETE)) 
-
-#define IR_WINKEL 20 // in GRAD
 
 #define MAX_SPEED 300 // cm/s
 #define MAX_MOTOR_U 15
 #define WAIT_WHILE(start_var, max_zeit) (millis() - start_var < max_zeit)
-
-
-
 
 /*              Variabelen              */
 extern int rot_count;
@@ -56,8 +51,6 @@ extern int last_step;
 /*            PID Variabeln         */
 extern double set_speed, cur_speed, Output;
 
-
-
 /*              Typen              */
 enum state_t {
   WAIT,
@@ -69,14 +62,20 @@ enum state_t {
   FINISH
 };
 
-enum modus_t {
+enum acc_modus_t {
   MODE_PID,
   MODE_NORMAL
 };
 
+enum drive_modus_t {
+  MODE_NORM,
+  MODE_WAY
+};
+
 /*            STATE-MACHINE         */
 extern state_t state;
-extern modus_t modus;
+extern acc_modus_t acc_modus;
+extern drive_modus_t drive_modus;
 
 /*                                      */
 /*              Funktionen              */
@@ -121,11 +120,15 @@ void initLastMotor();
 /*              THREADS                 */
 /*                                      */
 extern ThreadController controll;
-extern ThreadController timer_control;
+
 extern Thread threadReadData;
 extern Thread threadProgramm;
-extern Thread threadCheckTime; 
+extern Thread threadCheckTime;
+extern Thread threadSendSpeed;
 
 void thread_init();
+void thSendSpeed();
+void thProgramm();
+void thCheckTime();
 
 #endif

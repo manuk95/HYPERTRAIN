@@ -44,7 +44,7 @@ void beschleunigen(int speed)
   if(speed >= 0)  { digitalWrite(LED_VORNE_PIN, HIGH); digitalWrite(LED_HINTEN_PIN, LOW); } 
   else            { digitalWrite(LED_HINTEN_PIN, HIGH); digitalWrite(LED_VORNE_PIN, LOW); }
 
-  if(modus == MODE_PID)
+  if(acc_modus == MODE_PID)
   {
       #ifdef DEBUG_
           Serial.print("MODE_PID: Start Beschleunigung auf ");
@@ -55,7 +55,7 @@ void beschleunigen(int speed)
     start_isr = millis();
     PIDupdate();
   }
-  else if(modus == MODE_NORMAL)
+  else if(acc_modus == MODE_NORMAL)
   {
       #ifdef DEBUG_
           Serial.print("MODE_NORMAL: Start Beschleunigung von ");

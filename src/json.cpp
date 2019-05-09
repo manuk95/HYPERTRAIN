@@ -30,47 +30,6 @@ void sendJson(String sAction, int iPayload){
 }
 
 
-/*                                      */
-/* Die JSON-Daten werden ausgewertet.   */
-/*                                      */
-void parsJSON(char input[70]) {
-    // Initialize serial port
-
-    while (!Serial) continue;
-    
-    StaticJsonDocument<70> doc;
-
-
-    DeserializationError error = deserializeJson(doc, input);
-
-    if (error) {
-      Serial.print(F("deserializeJson() failed: "));
-      Serial.println(error.c_str());
-      Serial.println(input);
-      return;
-    }
-
-
-    // const char* sender = doc["sender"];
-    const char* action = doc["action"];
-    int payload = doc["payload"].as<int>();
-
-    handleData(action, payload);
-    
-    #ifdef TEST_
-      handleTestData(action, payload);
-    #endif
-
-    // Print values.
-    /*
-    Serial.println(sender);
-    Serial.println(action);
-    Serial.println(payload);
-    */
-
-
-}
-
 void handleData(const char* action, int payload){
   
     if(strcmp(action, "start") == 0){
@@ -82,8 +41,12 @@ void handleData(const char* action, int payload){
       beschleunigen(0);
       if(state == FINISH) { state = WAIT; 
                             start_race = millis();
-		                        start_acc = millis(); }
-      else                { state = FINISH; }
+		                        start_acc = millis(); 
+                            rot_count = 0;}
+      else                { state = FINISH; 
+                           start_race = millis();
+		                        start_acc = millis(); 
+                            rot_count = 0;}
       #ifdef DEBUG_
         Serial.println("## stop");
       #endif
@@ -117,22 +80,7 @@ void handleTestData(const char* action, int payload){
     }
     else if(strcmp(action, "DRIVE") == 0)
     {
-        if(payload == 0){
-          digitalWrite(HBRI_F_PIN, LOW);
-          delay(200);
-          digitalWrite(HBRI_R_PIN, LOW); 
-        }
-        else if(payload > 0){
-          digitalWrite(HBRI_R_PIN, LOW); 
-          delay(200);
-          digitalWrite(HBRI_F_PIN, HIGH); 
-        }
-        else
-        {
-          digitalWrite(HBRI_F_PIN, LOW); 
-          delay(200);
-          digitalWrite(HBRI_R_PIN, HIGH); 
-        }
+        
     }
     else if(strcmp(action, "ACC") == 0)
     {
@@ -229,6 +177,46 @@ void handleTestData(const char* action, int payload){
     }
 }
 #endif
+
+
+/*                                      */
+/* Die JSON-Daten werden ausgewertet.   */
+/*                                      */
+void parsJSON(char input[70]) {
+    // Initialize serial port
+
+    while (!Serial) continue;
+    
+    StaticJsonDocument<70> doc;
+
+
+    DeserializationError error = deserializeJson(doc, input);
+
+    if (error) {
+      Serial.print(F("deserializeJson() failed: "));
+      Serial.println(error.c_str());
+      Serial.println(input);
+      return;
+    }
+
+
+    // const char* sender = doc["sender"];
+    const char* action = doc["action"];
+    int payload = doc["payload"].as<int>();
+
+    handleData(action, payload);
+    
+    #ifdef TEST_
+      handleTestData(action, payload);
+    #endif
+
+    // Print values.
+    /*
+    Serial.println(sender);
+    Serial.println(action);
+    Serial.println(payload);
+    */
+}
 
 /*                                                              */
 /* Zeichen werden eingelesen und an den Parser weitergegeben.   */
