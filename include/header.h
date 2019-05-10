@@ -6,7 +6,7 @@
 
 
 // Configure DEBUG- / TEST- LEVEL & FUNCTION
-#define DEBUG_
+//#define DEBUG_
 //#define DEBUG_2
 #define TEST_
 //#define TEST_ROT    

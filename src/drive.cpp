@@ -68,7 +68,7 @@ void beschleunigen(int speed)
 
     if(speed > Output)
     {
-      for(int i = (int) Output; (i < speed) && (i < maxPWMoutput); i++)
+      for(int i = (int) Output; (i < speed) && (i <= maxPWMoutput); i++)
       {
         PWMoutput(i+1);
       }
@@ -76,7 +76,7 @@ void beschleunigen(int speed)
     }
     else
     {
-      for(int i = (int) Output; (i > speed) && (i < maxPWMoutput); i--)
+      for(int i = (int) Output; (i > speed) && (i <= maxPWMoutput); i--)
       {
         PWMoutput(i-1);
       }

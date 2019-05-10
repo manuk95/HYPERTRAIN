@@ -1,0 +1,23 @@
+
+//Raspberry Commands
+
+{"sender":"arduino","action":"start","payload":1}
+{"sender":"arduino","action":"stop","payload":1}
+
+{"sender":"arduino","action":"accelerate","payload":25}
+{"sender":"arduino","action":"accelerate","payload":50}
+
+{"sender":"arduino","action":"approachstop","payload":1}
+
+
+// TEST COMMANDS
+{"sender":"arduino","action":"LOAD","payload":1}
+
+{"sender":"arduino","action":"STOP","payload":1}
+
+{"sender":"arduino","action":"beschl","payload":100}
+
+
+
+
+

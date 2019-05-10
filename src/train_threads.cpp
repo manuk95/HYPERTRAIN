@@ -25,14 +25,16 @@ void thread_init(){
 	threadCheckTime.setInterval(250);
 
 	threadSendSpeed.onRun(thSendSpeed);
-	threadSendSpeed.setInterval(3000);
+	threadSendSpeed.setInterval(5000);
 
 	// Adds to the controll
 	controll.add(&threadCheckTime);
 	controll.add(&threadProgramm);
 	controll.add(&threadSendSpeed);
 	//controll.add(&threadReadData);
-
+	
+	threadSendSpeed.enabled = false;
+	threadCheckTime.enabled = false;
 }
 
 void thReadData()
@@ -47,9 +49,11 @@ void thCheckTime()
 
 void thSendSpeed()
 {
-	int way = rot_count * (WHEEL_CIRC/ANZAHL_MAGNETE) * 100; // in cm
-	sendJson("speed", (int)cur_speed);
-	sendJson("way", way);
+	uint16_t way = rot_count * (WHEEL_CIRC/ANZAHL_MAGNETE) / 100; // in cm
+	sendJson("speed", (int)cur_speed);	// mm/s
+	Serial.println();
+	sendJson("way", way);	// in cm
+	Serial.println();
 }
 
 void thProgramm(){
@@ -72,6 +76,8 @@ void thProgramm(){
 		sendJson("loaded", 1); 
 		state = ACCELERATION;
 		start_acc = millis();
+		//threadSendSpeed.enabled = true;
+		threadCheckTime.enabled = true;
   	}
 
   	else if(state == ACCELERATION){
@@ -103,7 +109,7 @@ void thProgramm(){
     
   }
   else if(state == FINISH){
-    
+    if(threadSendSpeed.enabled){threadSendSpeed.enabled = false;} 
   }
 }
 
