@@ -130,5 +130,6 @@ void thread_init();
 void thSendSpeed();
 void thProgramm();
 void thCheckTime();
+void thReadData();
 
 #endif

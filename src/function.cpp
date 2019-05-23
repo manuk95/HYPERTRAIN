@@ -50,7 +50,7 @@ uint16_t get_distanz()
 
 uint16_t getLastStep()
 {
-  while((int)0 == (int)get_distanz());
+  while((int)0 == (int)get_distanz()){yield();}
   delay(20);
   if(get_distanz() != 0){
     return get_distanz();
@@ -69,6 +69,7 @@ uint16_t getLastStep()
  ********************************************************/
 void checkTime()
 {
+  /*
   long runTime = millis() - start_acc;
 
   if(runTime > 180000){
@@ -88,14 +89,12 @@ void checkTime()
     }
   }
 
-
-
-
-
   #ifndef TEST_
     if((millis() % 1000 == 0))
     {
       digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
     }
   #endif
+
+  */
 }
