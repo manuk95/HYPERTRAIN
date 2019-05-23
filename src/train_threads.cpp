@@ -15,8 +15,8 @@ void thread_init(){
 
 	// Configure the Threads
 
-	threadReadData.onRun(thReadData);
-	threadReadData.setInterval(1);
+	//threadReadData.onRun(thReadData);
+	//threadReadData.setInterval(1);
 
 	threadProgramm.onRun(thProgramm);
 	threadProgramm.setInterval(20);
@@ -25,13 +25,13 @@ void thread_init(){
 	threadCheckTime.setInterval(250);
 
 	threadSendSpeed.onRun(thSendSpeed);
-	threadSendSpeed.setInterval(1000);
+	threadSendSpeed.setInterval(100);
 
 	// Adds to the controll
 	controll.add(&threadCheckTime);
 	controll.add(&threadProgramm);
 	controll.add(&threadSendSpeed);
-	controll.add(&threadReadData);
+	//controll.add(&threadReadData);
 	
 	threadSendSpeed.enabled = false;
 	threadCheckTime.enabled = false;
@@ -50,15 +50,21 @@ void thCheckTime()
 void thSendSpeed()
 {
 	uint16_t way = rot_count * (WHEEL_CIRC/ANZAHL_MAGNETE) / 100; // in cm
-	sendJson("speed", (int)cur_speed);	// mm/s
+	//sendJson("speed", (int)cur_speed);	// mm/s
 	Serial.println();
 	sendJson("way", way);	// in cm
 	Serial.println();
 }
 
+/********************************************************
+ * Hauptprogrammablauf
+ * 
+ * 
+ ********************************************************/
 void thProgramm(){
 
 	if(state == WAIT){
+
 		if(!check_init_lastmotor) {initLastMotor();}
 		start_race = millis();
 		start_acc = millis();
@@ -81,7 +87,7 @@ void thProgramm(){
 		state = ACCELERATION;
 		start_acc = millis();
 		threadSendSpeed.enabled = true;
-		threadCheckTime.enabled = true;
+		threadCheckTime.enabled = false;
   	}
 
   	else if(state == ACCELERATION)
@@ -100,7 +106,7 @@ void thProgramm(){
 
   else if(state == APPROACHSTOP){
      
-    while(getLastStep() == 0 && state == APPROACHSTOP){yield();}
+    //while(getLastStep() == 0 && state == APPROACHSTOP){yield();}
 		last_step = get_distanz();
 		if(last_step > 10)
 		{
@@ -114,7 +120,7 @@ void thProgramm(){
   }
   else if(state == FINISH){
     if(threadSendSpeed.enabled){threadSendSpeed.enabled = false;} 
-		if(threadCheckTime.enabled){threadCheckTime.enabled = false;}
+	if(threadCheckTime.enabled){threadCheckTime.enabled = false;}
   }
 }
 

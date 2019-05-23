@@ -31,6 +31,8 @@ void isr_tacho_count()
     PIDupdate();
   }
 
+
+/*
   if (rot_count >= MAX_ROT_COUNT)
   {
     rot_count = 0;
@@ -43,6 +45,7 @@ void isr_tacho_count()
       state = APPROACHSTOP;
     }
   }
+  */
 
   if (state == STOPPING)
   {

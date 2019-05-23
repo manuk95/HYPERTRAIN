@@ -52,7 +52,7 @@ void load(){
   load_wait_start = millis();
  // while(!digitalRead(HALL_LAST_2_PIN) && WAIT_WHILE(load_wait_start, 6000));
   
-  while(digitalRead(HALL_LAST_2_PIN)){ yield();}
+  while(digitalRead(HALL_LAST_2_PIN));
 
       #ifdef DEBUG_
           Serial.println("Hallsensor2 on");

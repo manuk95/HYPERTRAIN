@@ -96,7 +96,8 @@ void PWMoutput(int output){
   }
   else if(output > 0){
     analogWrite(HBRI_F_PIN, output); 
-    delay(10);
+    if(output < 50) { delay(11); }
+    else { delay(14); } 
   }
   else
   {

@@ -45,7 +45,7 @@ void handleData(const char* action, int payload){
 		                        start_acc = millis(); 
                             rot_count = 0;}
       else                { state = FINISH; 
-                           start_race = millis();
+                            start_race = millis();
 		                        start_acc = millis(); 
                             rot_count = 0;}
       #ifdef DEBUG_
