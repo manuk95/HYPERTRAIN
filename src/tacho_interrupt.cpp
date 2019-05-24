@@ -3,7 +3,7 @@
 
 /********************************************************
  * INTERRUPT
- * Funktion wird durch den INterrupt ausgelöst.
+ * Funktion wird durch den Interrupt ausgelöst.
  *                     
  *
  * 

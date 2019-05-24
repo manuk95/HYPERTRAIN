@@ -49,7 +49,7 @@ void thCheckTime()
 
 void thSendSpeed()
 {
-	uint16_t way = rot_count * (WHEEL_CIRC/ANZAHL_MAGNETE) / 100; // in cm
+	double way = rot_count * ((WHEEL_CIRC/ANZAHL_MAGNETE) / 100); // in cm
 	//sendJson("speed", (int)cur_speed);	// mm/s
 	Serial.println();
 	sendJson("way", way);	// in cm
@@ -87,7 +87,7 @@ void thProgramm(){
 		state = ACCELERATION;
 		start_acc = millis();
 		threadSendSpeed.enabled = true;
-		threadCheckTime.enabled = false;
+		threadCheckTime.enabled = true;
   	}
 
   	else if(state == ACCELERATION)

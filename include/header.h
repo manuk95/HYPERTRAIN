@@ -99,6 +99,7 @@ void checkTime();
 // JSON
 void readData();
 void sendJson(String sAction, int iPayload);
+void sendJson(String sAction, double dPayload);
 void parsJSON(char input[]);
 void handleData(const char* action, int payload);
 void handleTestData(const char* action, int payload);

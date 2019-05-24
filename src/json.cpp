@@ -29,6 +29,24 @@ void sendJson(String sAction, int iPayload){
 
 }
 
+void sendJson(String sAction, double dPayload){
+      /*
+      char cAction[15];
+      char cPayload[15];
+      sAction.toCharArray(cAction, 15);
+      itoa(iPayload, cPayload, 10);
+      */
+      StaticJsonDocument<200> doc;
+
+      doc["sender"] = "arduino";
+      doc["action"] = sAction;
+      doc["payload"] = dPayload;
+
+      serializeJson(doc, Serial);
+      // {"sensor":"gps","time":1351824120,"data":[48.756080,2.302038]}
+
+}
+
 
 void handleData(const char* action, int payload){
   

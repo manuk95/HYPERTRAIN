@@ -90,13 +90,10 @@ void checkTime()
       sendJson("finish", runTime);
     }
   }
+*/
+//rot_count += 10;
+ 
 
-  #ifndef TEST_
-    if((millis() % 1000 == 0))
-    {
-      digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    }
-  #endif
 
-  */
+  
 }
