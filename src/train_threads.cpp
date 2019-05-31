@@ -86,8 +86,8 @@ void thProgramm(){
 		sendJson("loaded", 1); 
 		state = ACCELERATION;
 		start_acc = millis();
-		threadSendSpeed.enabled = true;
-		threadCheckTime.enabled = true;
+		threadSendSpeed.enabled = false;
+		threadCheckTime.enabled = false;
   	}
 
   	else if(state == ACCELERATION)

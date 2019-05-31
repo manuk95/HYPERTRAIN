@@ -34,7 +34,7 @@
 #define WHEEL_CIRC 942 //x 0.1mm
 #define ANZAHL_MAGNETE 4
 #define MAX_STRECKE 230000 //(23 * 10000) // in 0.1mm, zwei Runden
-#define MAX_ROT_COUNT (MAX_STRECKE / (WHEEL_CIRC / ANZAHL_MAGNETE)) 
+// #define MAX_ROT_COUNT (MAX_STRECKE / (WHEEL_CIRC / ANZAHL_MAGNETE)) 
 
 #define MAX_SPEED 300 // cm/s
 #define MAX_MOTOR_U 15

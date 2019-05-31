@@ -49,7 +49,9 @@ void sendJson(String sAction, double dPayload){
 
 
 void handleData(const char* action, int payload){
-  
+
+    sendJson(action, payload);
+
     if(strcmp(action, "start") == 0){
       state = LOAD;
       start_race = millis();
