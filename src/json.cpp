@@ -82,7 +82,6 @@ void handleData(const char* action, int payload){
       if(state == DRIVE || state == ACCELERATION) 
       {
         state = APPROACHSTOP;
-        beschleunigen(25);
       }
         #ifdef DEBUG_
           Serial.println("Langsames Anhalten");

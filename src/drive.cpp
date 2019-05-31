@@ -87,6 +87,13 @@ void beschleunigen(int speed)
       #endif
   }
 }
+/*                              *
+* PWM Outputs with delay steps  *
+*                               */
+#define ACC_STEP1 10
+#define ACC_STEP2 60
+#define ACC_STEP3 100
+#define ACC_STEP4 200
 
 void PWMoutput(int output){
   if(output == 0){
@@ -96,8 +103,12 @@ void PWMoutput(int output){
   }
   else if(output > 0){
     analogWrite(HBRI_F_PIN, output); 
-    if(output < 50) { delay(10); }
-    else { delay(13); } 
+    
+    if(output < ACC_STEP1) { delay(1); }
+    else if(output > ACC_STEP1 && output < ACC_STEP2) { delay(11); }
+    else if(output > ACC_STEP2 && output < ACC_STEP3) { delay(13); }
+    else if(output > ACC_STEP3 && output < ACC_STEP4) { delay(11); }
+    else if(output > ACC_STEP4) { delay(10); }
   }
   else
   {

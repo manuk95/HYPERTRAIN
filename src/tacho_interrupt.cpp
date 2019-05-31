@@ -32,7 +32,7 @@ void isr_tacho_count()
   }
 
 
-/*
+#ifdef MAX_ROT_COUNT
   if (rot_count >= MAX_ROT_COUNT)
   {
     rot_count = 0;
@@ -45,7 +45,8 @@ void isr_tacho_count()
       state = APPROACHSTOP;
     }
   }
-  */
+  #endif
+  
 
   if (state == STOPPING)
   {

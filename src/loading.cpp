@@ -19,7 +19,7 @@ void load(){
       #endif
   
     unsigned long load_wait_start = millis();
-  while(digitalRead(ENDSCHALTER_PIN) && WAIT_WHILE(load_wait_start, 7000));
+  while(digitalRead(ENDSCHALTER_PIN) && WAIT_WHILE(load_wait_start, 10000));
   //while(digitalRead(ENDSCHALTER_PIN));
   beschl_time = millis() - beschl_time;
   beschleunigen(0);
