@@ -14,8 +14,8 @@ void isr_tacho_count()
 {
   rot_count++;
 
-  get_speed();
-  readData();
+  //get_speed();
+ // readData();
 
 #ifdef DEBUG_
   Serial.print("ROT_COUNT: ");
@@ -33,33 +33,33 @@ void isr_tacho_count()
 
 
 #ifdef MAX_ROT_COUNT
-  if (rot_count >= MAX_ROT_COUNT)
-  {
-    rot_count = 0;
-    if (state == DRIVE || state == ACCELERATION)
-    {
-      if (Output > 25)
+      if (rot_count >= MAX_ROT_COUNT)
       {
-        beschleunigen(25);
+        rot_count = 0;
+        if (state == DRIVE || state == ACCELERATION)
+        {
+          if (Output > 25)
+          {
+            beschleunigen(25);
+          }
+          state = APPROACHSTOP;
+        }
       }
-      state = APPROACHSTOP;
-    }
-  }
   #endif
   
 
   if (state == STOPPING)
   {
-    last_step -= (WHEEL_CIRC / ANZAHL_MAGNETE / 10); // last_step in mm
-#ifdef DEBUG_
-    Serial.print("LAST_STEP: ");
-    Serial.println(last_step);
-#endif
-    if (last_step < WHEEL_CIRC / ANZAHL_MAGNETE / 10)
-    {
-      beschleunigen(0);
-      state = FINISH;
-      sendJson("FINISH", last_step);
-    }
+        last_step -= (WHEEL_CIRC / ANZAHL_MAGNETE / 10); // last_step in mm
+    #ifdef DEBUG_
+        Serial.print("LAST_STEP: ");
+        Serial.println(last_step);
+    #endif
+        if (last_step < WHEEL_CIRC / ANZAHL_MAGNETE / 10)
+        {
+          beschleunigen(0);
+          state = FINISH;
+          sendJson("FINISH", last_step);
+        }
   }
 }
